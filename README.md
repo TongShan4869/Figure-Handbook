@@ -771,7 +771,7 @@ A good figure:
 
 Another bad figure:
 
-![](https://i.imgur.com/vVVpx98.png =550x)
+![](https://i.imgur.com/vVVpx98.png)
 
 This is a figure meant to show the auditory brainstem response (ABR) to music and speech.
 The following corrections are necessary:
@@ -785,7 +785,7 @@ The following corrections are necessary:
 
 A good figure:
 
-![](https://i.imgur.com/t2uXYtK.png =550x)
+![](https://i.imgur.com/t2uXYtK.png)
 
 
 
