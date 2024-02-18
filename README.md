@@ -1,73 +1,13 @@
 
-Figure Handbook
+Figure Handbook (Part I - Basics)
 ===
 This is a guidline for generating figures in Python. Originally written for student in our lab ([Maddox lab](https://github.com/maddoxlab)). We will keep this file updating.
 
 Author: Madeline Cappelloni & Tong Shan (Maddox Lab)
 
 
-**Table of Content**
-<!-- MDTOC maxdepth:6 firsth1:1 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+Edit: Thomas Stoll
 
-- [Figure Handbook](#figure-handbook)   
-- [Python](#python)   
-   - [Figures and Axes](#figures-and-axes)   
-      - [Multiple axes in one figure](#multiple-axes-in-one-figure)   
-         - [Subplot](#subplot)   
-         - [GridSpec](#gridspec)   
-         - [Keeping Axes Consistent](#keeping-axes-consistent)   
-         - [Spacing](#spacing)   
-      - [Spines](#spines)   
-      - [Grid Lines](#grid-lines)   
-      - [Saving figures](#saving-figures)   
-   - [Text](#text)   
-      - [Font and size](#font-and-size)   
-      - [Numbers, Special Characters, and Mathematical Formating](#numbers-special-characters-and-mathematical-formating)   
-         - [Numbers](#numbers)   
-         - [Special Characters](#special-characters)   
-         - [Mathematical Formatting](#mathematical-formatting)   
-      - [Legends](#legends)   
-      - [Annotations](#annotations)   
-      - [X/Ytick labels](#xytick-labels)   
-   - [Data elements](#data-elements)   
-      - [Line Styles and Linewidth](#line-styles-and-linewidth)   
-      - [Marker and Marker Size](#marker-and-marker-size)   
-      - [Mechanics of changing color](#mechanics-of-changing-color)   
-         - [Types of color](#types-of-color)   
-         - [Alpha](#alpha)   
-         - [Colorbar and Colormaps](#colorbar-and-colormaps)   
-      - [Error and CI](#error-and-ci)   
-         - [SEM](#sem)   
-         - [Analytical Confidence Intervals](#analytical-confidence-intervals)   
-         - [Numerical Estimation of Confidence Intervals](#numerical-estimation-of-confidence-intervals)   
-      - [Order](#order)   
-      - [Showing individual subjects & means on same plot](#showing-individual-subjects-means-on-same-plot)   
-   - [Styles](#styles)   
-      - [rcParams](#rcparams)   
-      - [Style sheets](#style-sheets)   
-   - [Packages](#packages)   
-      - [Seaborn](#seaborn)   
-      - [OpenCV (CV2)](#opencv-cv2)   
-      - [MNE](#mne)   
-- [Other programs](#other-programs)   
-   - [Assembling multiple panel figures outside of python](#assembling-multiple-panel-figures-outside-of-python)   
-   - [Making methods/explanation figures](#making-methodsexplanation-figures)   
-   - [Spacing/distributing/aligning elements](#spacingdistributingaligning-elements)   
-   - [Exporting figures](#exporting-figures)   
-- [Good practices](#good-practices)   
-   - [Differences between Figures for Manuscripts, Posters, and Slides](#differences-between-figures-for-manuscripts-posters-and-slides)   
-   - [Color](#color)   
-      - [Colorblind-friendly Schemes](#colorblind-friendly-schemes)   
-      - [Colors that Represent Concepts](#colors-that-represent-concepts)   
-   - [Caption guide](#caption-guide)   
-   - [Good and bad figures examples](#good-and-bad-figures-examples)   
-   - [Checklist](#checklist)   
-      - [Figure formatting](#figure-formatting)   
-      - [Text](#text)   
-      - [Data](#data)   
-      - [Other](#other)   
-
-<!-- /MDTOC -->
 # Python
 
 Most graphics created in Python are created with the matplotlib package (which contains several functions modeled after MATLAB). Full documentation for matplotlib is found [here](https://matplotlib.org/stable/api/).
@@ -102,7 +42,11 @@ ax.xlim([0, 100]) # option 1
 plt.xlim([0, 100]) # option 2
 plt.gca().xlim([0, 100]) # option 3
 ```
-
+Using `plt.subplots()` is another great option to generate figures. This is widely used when ploting multiple plots in grids.
+```python
+fig, ax = plt.subplots()
+fig.set_size_inches(3,2)
+```
 ### Multiple axes in one figure
 
 Often, it can be useful to partition a given figure into several axes. This can be done using the subplot function to divide the figure into an m by n grid of equally sized axes *or* with a more custom grid using gridspec. Note: if you're spending too much time customizing your grid layout, you might decide to assemble several smaller figures in another program.
@@ -114,6 +58,14 @@ Often, it can be useful to partition a given figure into several axes. This can 
 plt.subplot(2, 3, 4) # a 2 x 3 grid, with the 4th position selected
 plt.subplot(234) # an equivalent syntax for grids with <10 axes
 ```
+Another way to do this is through `plt.subplots()`
+```python
+fig, axs = plt.subplots(2, 3)
+```
+The axs variable will be a numpy array containing the different axes (shape is [row, column], e.g. `axs[0, 0]` is the top left plot and `axs[-1, -1]` is bottom right).These are very useful when looping through the axes to plot.
+
+Note that `plt.subplots` can also be used to make a 1x1 figure or a 1xn figure and axs will either be a single axis (not an array) or a 1D array, respectively, making it easier to index.
+
 #### GridSpec
 [GridSpec](https://matplotlib.org/stable/api/_as_gen/matplotlib.gridspec.GridSpec.html) can be used to create a custom grid, with different axes having different sizes.
 
@@ -158,6 +110,11 @@ plt.ylim(ylims)
 
 If each panel in a *row* has the same *y*-axis label, the label can be omitted on all panels except the *leftmost* panel. If each panel in a *column* has the same *x*-axis label, the label can be omitted on all panels except the *bottom* panel.
 
+Anther way to do it is through `plt.subplots()`:
+```python
+fig, axs = plt.subplots(2, 3, sharex=True, sharey=True, figsize=(3,4))
+```
+
 #### Spacing
 
 Although matplotlib endeavors to space figure elements in a sensible way, it often allocates more white space than is needed (or crops things oddly). The tight_layout function maximizes the space taken up by the actual figure and its labels.
@@ -167,8 +124,12 @@ Although matplotlib endeavors to space figure elements in a sensible way, it oft
 
 plt.tight_layout()
 ```
+or passing it when saving plots in the `bbox_inches` arg:
+```python
+plt.savefig(..., bbox_inches='tight')
+```
 
-If your figure is particularly complex or has larger text, the tight_layout() function may also fail to give you a sensible layout. The subplots_adjust() function can remedy this situation.
+If your figure is particularly complex or has larger text, the `tight_layout()` function may also fail to give you a sensible layout. The `subplots_adjust()` function can remedy this situation.
 
 First, click the spacing options (icon between the magnifying glass and jagged arrow). Here, manually adjust the borders and spacings options until you like the look of the figure.
 
@@ -199,6 +160,12 @@ To also remove the ticks of the x- and y-axis:
 plt.gca().xaxis.set_visible(False)
 plt.gca().yaxis.set_visible(False)
 ```
+For plots in log scale like this, sometimes you may want to remove the minor ticks
+
+<img src="https://i.stack.imgur.com/qgW3g.png" width="250" height="250" />
+
+you can do this via `ax.minorticks_off()` or `ax.xaxis.set_tick_params(which='minor', bottom=False)`.
+
 
 ### Grid Lines
 
@@ -214,6 +181,7 @@ plt.grid(True, axis='y')
 # horizontal gridlines only
 plt.grid(True, axis='x')
 ```
+For specific axis, this can be done by `ax.grid(True)`.
 
 ### Saving figures
 After carefully creating your figure, you can save in python using the savfig() function. This function will save the figure every time you update it and run your analysis code.
@@ -229,6 +197,9 @@ plt.savefig('path/filename.pdf', dpi=300)
 # if next destination is part of Microsoft Office
 plt.savefig('path/filename.png', dpi=300)
 ```
+> [!TIP]
+> Recent journals prefer line art to be vector graph with format like `eps` or  `tiff` using high dpi (>1000). A vector image use mathematical expressions  instead of pixels. But you can still use `png` in your text document for initial submission.
+
 
 ## Text
 
@@ -251,6 +222,7 @@ from matplotlib import rc
 rcParams['font.sans_serif'] = "Arial"
 rc('font', size=12)
 ```
+When you need a specific font, use `matplotlib.font_manager.addfont()`.
 
 The size of individual elements can also be changed when they are created or modified. Some examples:
 
@@ -330,6 +302,15 @@ If all else fails, the size of the text in the legend can be reduced by a few po
 plt.legend(prop={'size': 8})
 ```
 
+There might be more lines/patches/etc. in the figures than you want in the legend. You can use something like `matplotlib.lines.Line2D` or `matplotlib.patches.Patch` to create an array of the lines/patches with the colors and styles you want. Then pass that into the legend function using the handles argument.
+
+```python
+legline = [Line2D([0], [0], color='r', linestyle='--', label='Test 1'),
+           Line2D([0], [0], color='r', linestyle=':', label='Test 2'),
+           Patch(color='g', label='Test 3')]
+fig.legend(handles=legline)
+```
+
 ### Annotations
 
 Figures can also be annotated using the [annotate](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.annotate.html) method or [more advanced options](https://matplotlib.org/stable/tutorials/text/annotations.html#plotting-guide-annotation).
@@ -350,6 +331,14 @@ For xtick labels that are longer strings, the rotation parameter allows you to m
 plt.xticks([0, 25, 50, 75, 100], ['abysmal', 'bad', 'meh', 'good', 'amazing'],
           rotation=90)
 ```
+For setting in axes:
+```python
+# for x ticks
+ax.set_xticks()
+# for y ticks
+ax.set_xticks()
+```
+
 
 ## Data elements
 
@@ -494,6 +483,9 @@ plt.colorbar(im, ax=ax)
 Find all the built-in colormaps [here](https://matplotlib.org/stable/tutorials/colors/colormaps.html
 ).
 You can also create your own colormaps using the function `matplotlib.color. LinearSegmentedColormap.from_list()`. More information is available [here](https://matplotlib.org/stable/gallery/color/custom_cmap.html#sphx-glr-gallery-color-custom-cmap-py).
+
+>[!NOTE]
+Note that colorbars have their own axes, so all the previous functions can be used on them (e.g. set ticks, title, label, etc.).
 
 ### Error and CI		 
 
@@ -676,10 +668,14 @@ The code will make a plot like this
 ![](https://i.imgur.com/IPr4jyv.png)
 
 
+> We will focus on generating plots useing **MNE** in next tutorial! 
+(Doc in prep!)
+
+
 # Other programs
 
 ## Assembling multiple panel figures outside of python
-For figures/images that need to be assembled into one figure with multiple panels, we could use graphic editing programs, such as Adobe Illustrator, Adobe Photoshop, Inkscape, MS PowerPoint, etc.
+For figures/images that need to be assembled into one figure with multiple panels, we could use graphic editing programs, such as Adobe Illustrator, Adobe Photoshop, Inkscape, MS PowerPoint, etc. There are also web-based editors, such as photopea.
 
 Things need to be keep in mind when creating multiple panel figures:
 
