@@ -1,7 +1,9 @@
 
 Figure Handbook
 ===
-Author: Madeline Cappelloni & Tong Shan (AMPLab)
+This is a guidline for generating figures in Python. Originally written for student in our lab ([Maddox lab](https://github.com/maddoxlab)). We will keep this file updating.
+
+Author: Madeline Cappelloni & Tong Shan (Maddox Lab)
 
 
 **Table of Content**
