@@ -1,9 +1,9 @@
 
 Figure Handbook (Part I - Basics)
 ===
-This is a guidline for generating figures in Python. Originally written for student in our lab ([Maddox lab](https://github.com/maddoxlab)). We will keep this file updating.
+This is a guidline for generating figures in Python. Originally written for members in our lab ([Maddox lab](https://github.com/maddoxlab)). We will keep this file updating.
 
-Author: Madeline Cappelloni, Tong Shan, Thomas Stoll(Maddox Lab)
+Author: Madeline Cappelloni, Tong Shan, Thomas Stoll
 
 Edit: Feb 18, 2024
 
